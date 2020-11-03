@@ -8,6 +8,9 @@ target 'MobileCRM' do
 
   use_react_native!(:path => config["reactNativePath"])
 
+  pod 'Firebase/Analytics'
+  pod 'Firebase/Auth'
+
   target 'MobileCRMTests' do
     inherit! :complete
     # Pods for testing
