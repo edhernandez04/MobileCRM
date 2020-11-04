@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -10,11 +10,30 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
+import auth from '@react-native-firebase/auth';
+// import {GoogleSignin} from '@react-native-community/google-signin';
 
 const App = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [signUpVisible, setSignUpVisible] = useState(false);
+
+//   useEffect(() => {
+//     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+//     return subscriber;
+//   }, []);
+
+  const onAuthStateChanged = (user) => {
+    setUser(user);
+    if (initializing) setInitializing(false);
+  };
+
+  const onGoogleButtonPress = async () => {
+    const {idToken} = await GoogleSignin.signIn();
+    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+    return auth().signInWithCredential(googleCredential);
+  };
+
 
   return (
     <>
@@ -64,7 +83,6 @@ const App = () => {
               </TouchableOpacity>
             </View>
           </View>
-
         </View>
       </SafeAreaView>
     </>
