@@ -11,17 +11,18 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
-// import {GoogleSignin} from '@react-native-community/google-signin';
+import {GoogleSignin} from '@react-native-community/google-signin';
 
 const App = () => {
+  const [initializing, setInitializing] = useState(true);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [signUpVisible, setSignUpVisible] = useState(false);
 
-//   useEffect(() => {
-//     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-//     return subscriber;
-//   }, []);
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber;
+  }, []);
 
   const onAuthStateChanged = (user) => {
     setUser(user);
@@ -33,7 +34,6 @@ const App = () => {
     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
     return auth().signInWithCredential(googleCredential);
   };
-
 
   return (
     <>
