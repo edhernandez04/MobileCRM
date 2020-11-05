@@ -11,12 +11,18 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
-import {GoogleSignin} from '@react-native-community/google-signin';
+import {
+  GoogleSignin,
+  GoogleSigninButton,
+  statusCodes,
+} from '@react-native-community/google-signin';
+import {firebaseConfig} from '../Setup';
 
 const App = () => {
   const [initializing, setInitializing] = useState(true);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [user, setUser] = useState();
   const [signUpVisible, setSignUpVisible] = useState(false);
 
   useEffect(() => {
@@ -24,15 +30,47 @@ const App = () => {
     return subscriber;
   }, []);
 
-  const onAuthStateChanged = (user) => {
+  GoogleSignin.configure({
+    webClientId: firebaseConfig.webClientId,
+  });
+
+  onAuthStateChanged = (user) => {
     setUser(user);
     if (initializing) setInitializing(false);
   };
 
-  const onGoogleButtonPress = async () => {
+  onGoogleButtonPress = async () => {
     const {idToken} = await GoogleSignin.signIn();
     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
     return auth().signInWithCredential(googleCredential);
+  };
+
+  signIn = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      setUser(userInfo);
+    } catch (error) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        // user cancelled the login flow
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        // operation (e.g. sign in) is in progress already
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        // play services not available or outdated
+      } else {
+        // some other error happened
+      }
+    }
+  };
+
+  signOut = async () => {
+    try {
+      await GoogleSignin.revokeAccess();
+      await GoogleSignin.signOut();
+      setUser(null); // Remember to remove the user from your app's state as well
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -77,9 +115,13 @@ const App = () => {
                 <Text style={{fontSize: 18}}>Login</Text>
               </TouchableOpacity>
               <TouchableOpacity>
-                <View style={styles.signUpButton}>
-                  <Text style={{fontSize: 18, color: 'white'}}>Sign Up ⇢</Text>
-                </View>
+                  <GoogleSigninButton
+                    style={{width: 192, height: 48}}
+                    size={GoogleSigninButton.Size.Wide}
+                    color={GoogleSigninButton.Color.Dark}
+                    onPress={() => signIn()}
+                    disabled={initializing}
+                  />
               </TouchableOpacity>
             </View>
           </View>

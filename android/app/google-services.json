@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "984461995380",
+    "firebase_url": "https://mobilecrm-e57c8.firebaseio.com",
+    "project_id": "mobilecrm-e57c8",
+    "storage_bucket": "mobilecrm-e57c8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:984461995380:android:8764201632048d8b6e1021",
+        "android_client_info": {
+          "package_name": "com.mobilecrm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "984461995380-9pfgi65nnch4ijc9sekotrqecqakb5vi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBi-rhwHmpFGT7A-u98PbFGRcKQbTat1RU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "984461995380-9pfgi65nnch4ijc9sekotrqecqakb5vi.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "984461995380-opjftgjckadku3551flsgduqkmkloma2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.EdCache.MobileCRM"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
