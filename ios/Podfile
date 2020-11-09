@@ -1,7 +1,7 @@
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-platform :ios, '10.0'
+platform :ios, '13.1'
 
 target 'MobileCRM' do
   config = use_native_modules!
@@ -23,14 +23,5 @@ target 'MobileCRM' do
   use_flipper!
   post_install do |installer|
     flipper_post_install(installer)
-  end
-end
-
-target 'MobileCRM-tvOS' do
-  # Pods for MobileCRM-tvOS
-
-  target 'MobileCRM-tvOSTests' do
-    inherit! :search_paths
-    # Pods for testing
   end
 end

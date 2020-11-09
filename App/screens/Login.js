@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -16,13 +16,12 @@ import {
   GoogleSigninButton,
   statusCodes,
 } from '@react-native-community/google-signin';
-import {firebaseConfig} from '../../Setup';
+import { firebaseConfig } from '../../Setup';
 
-const Login = () => {
+const Login = props => {
   const [initializing, setInitializing] = useState(true);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [user, setUser] = useState();
   const [signUpVisible, setSignUpVisible] = useState(false);
 
   useEffect(() => {
@@ -35,12 +34,12 @@ const Login = () => {
   });
 
   onAuthStateChanged = (user) => {
-    setUser(user);
+    props.setUser(user);
     if (initializing) setInitializing(false);
   };
 
   onGoogleButtonPress = async () => {
-    const {idToken} = await GoogleSignin.signIn();
+    const { idToken } = await GoogleSignin.signIn();
     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
     return auth().signInWithCredential(googleCredential);
   };
@@ -49,7 +48,7 @@ const Login = () => {
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
-      setUser(userInfo);
+      props.setUser(userInfo);
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         console.log(error.code);
@@ -61,7 +60,7 @@ const Login = () => {
     try {
       await GoogleSignin.revokeAccess();
       await GoogleSignin.signOut();
-      setUser(null); // Remember to remove the user from your app's state as well
+      props.setUser(null); // Remember to remove the user from your app's state as well
     } catch (error) {
       console.error(error);
     }
@@ -106,11 +105,11 @@ const Login = () => {
 
             <View style={styles.optionsRow}>
               <TouchableOpacity>
-                <Text style={{fontSize: 18}}>Login</Text>
+                <Text style={{ fontSize: 18 }}>Login</Text>
               </TouchableOpacity>
               <TouchableOpacity>
                 <GoogleSigninButton
-                  style={{width: 192, height: 48}}
+                  style={{ width: 192, height: 48 }}
                   size={GoogleSigninButton.Size.Wide}
                   color={GoogleSigninButton.Color.Dark}
                   onPress={() => signIn()}
