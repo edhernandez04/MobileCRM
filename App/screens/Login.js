@@ -34,7 +34,7 @@ const Login = props => {
   });
 
   onAuthStateChanged = (user) => {
-    // props.setUser(user);
+    props.setParams({ user: user })
     if (initializing) setInitializing(false);
   };
 
@@ -48,7 +48,7 @@ const Login = props => {
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
-      props.setUser(userInfo);
+      navigation.navigate('Home', { user: userInfo })
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         console.log(error.code);
@@ -60,7 +60,7 @@ const Login = props => {
     try {
       await GoogleSignin.revokeAccess();
       await GoogleSignin.signOut();
-      props.setUser(null); // Remember to remove the user from your app's state as well
+      props.setParams({ user: null }); // Remember to remove the user from your app's state as well
     } catch (error) {
       console.error(error);
     }
@@ -83,7 +83,7 @@ const Login = props => {
 
           <View style={styles.userInfoContainer}>
             <View style={styles.textInputContainer}>
-              <Text>🎃</Text>
+              <Text>👤</Text>
               <TextInput
                 style={styles.inputForm}
                 placeholder="Username"
