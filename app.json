@@ -1,4 +1,6 @@
 {
   "name": "MobileCRM",
-  "displayName": "MobileCRM"
+  "displayName": "MobileCRM",
+  "description": "built by Cache Technologies",
+  "version": "1.6.0"
 }

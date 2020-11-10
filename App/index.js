@@ -4,14 +4,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import Login from './screens/Login';
 import Home from './screens/Home';
 
-const [user, setUser] = useState(null);
-
 function HomeScreen({ navigation }) {
-  return <Home navigation={navigation} user={user}/>;
+  return <Home navigation={navigation} />;
 }
 
 function LoginScreen({ navigation }) {
-  return <Login navigation={navigation} user={user} setUser={setUser} />;
+  return <Login navigation={navigation} />;
 }
 
 const Drawer = createDrawerNavigator();

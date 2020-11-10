@@ -34,7 +34,7 @@ const Login = props => {
   });
 
   onAuthStateChanged = (user) => {
-    props.setUser(user);
+    // props.setUser(user);
     if (initializing) setInitializing(false);
   };
 
