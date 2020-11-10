@@ -22,9 +22,9 @@ const Login = props => {
   const [initializing, setInitializing] = useState(true);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [signUpVisible, setSignUpVisible] = useState(false);
 
   useEffect(() => {
+    console.log(auth()._user)
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     return subscriber;
   }, []);
@@ -33,30 +33,16 @@ const Login = props => {
     webClientId: firebaseConfig.webClientId,
   });
 
-  onAuthStateChanged = (user) => {
-    if (user != null || user != undefined) {
-      const currentUser = { displayName: user.displayName, email: user.email, photo: user.photoURL }
-      props.navigation.setParams({ user: currentUser })
-    }
+  onAuthStateChanged = () => {
     if (initializing) setInitializing(false);
   };
 
   onGoogleButtonPress = async () => {
-    const { idToken } = await GoogleSignin.signIn();
+    const userInfo = await GoogleSignin.signIn();
+    const idToken = userInfo.idToken
     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+    props.navigation.setParams({ user: userInfo.user })
     return auth().signInWithCredential(googleCredential);
-  };
-
-  signIn = async () => {
-    try {
-      await GoogleSignin.hasPlayServices();
-      const userInfo = await GoogleSignin.signIn();
-      props.navigation.setParams({ user: userInfo })
-    } catch (error) {
-      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-        console.log(error.code);
-      }
-    }
   };
 
   signOut = async () => {
@@ -69,62 +55,70 @@ const Login = props => {
     }
   };
 
-  return (
-    <>
-      <StatusBar />
-      <SafeAreaView>
-        <View style={styles.mainPageContainer}>
-          <View style={styles.logoContainer}>
-            <Image
-              style={styles.logo}
-              source={{
-                uri:
-                  'https://firebasestorage.googleapis.com/v0/b/mobilecrm-e57c8.appspot.com/o/KeepContact.png?alt=media&token=9df42cb5-57d7-4dd3-a2e9-0fca2fc1816e',
-              }}
-            />
-          </View>
-
-          <View style={styles.userInfoContainer}>
-            <View style={styles.textInputContainer}>
-              <Text>👤</Text>
-              <TextInput
-                style={styles.inputForm}
-                placeholder="Username"
-                onChangeText={setUsername}
-                value={username}
-              />
-            </View>
-
-            <View style={styles.textInputContainer}>
-              <Text>🔐</Text>
-              <TextInput
-                style={styles.inputForm}
-                placeholder="Password"
-                secureTextEntry={true}
-                onChangeText={setPassword}
-                value={password}
-              />
-            </View>
-
-            <View style={styles.optionsRow}>
-              <TouchableOpacity>
-                <Text style={{ fontSize: 18 }}>Login</Text>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <GoogleSigninButton
-                  style={{ width: 192, height: 48 }}
-                  size={GoogleSigninButton.Size.Wide}
-                  color={GoogleSigninButton.Color.Dark}
-                  onPress={() => onGoogleButtonPress()}
-                  disabled={initializing}
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
+  return auth()._user ?
+    (
+      <>
+        <View>
+          <Text>{auth()._user.displayName}</Text>
         </View>
-      </SafeAreaView>
-    </>
-  );
+      </>
+    )
+    : (
+      <>
+        <StatusBar />
+        <SafeAreaView>
+          <View style={styles.mainPageContainer}>
+            <View style={styles.logoContainer}>
+              <Image
+                style={styles.logo}
+                source={{
+                  uri:
+                    'https://firebasestorage.googleapis.com/v0/b/mobilecrm-e57c8.appspot.com/o/KeepContact.png?alt=media&token=9df42cb5-57d7-4dd3-a2e9-0fca2fc1816e',
+                }}
+              />
+            </View>
+
+            <View style={styles.userInfoContainer}>
+              <View style={styles.textInputContainer}>
+                <Text>👤</Text>
+                <TextInput
+                  style={styles.inputForm}
+                  placeholder="Username"
+                  onChangeText={setUsername}
+                  value={username}
+                />
+              </View>
+
+              <View style={styles.textInputContainer}>
+                <Text>🔐</Text>
+                <TextInput
+                  style={styles.inputForm}
+                  placeholder="Password"
+                  secureTextEntry={true}
+                  onChangeText={setPassword}
+                  value={password}
+                />
+              </View>
+
+              <View style={styles.optionsRow}>
+                <TouchableOpacity>
+                  <Text style={{ fontSize: 18 }}>Login</Text>
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <GoogleSigninButton
+                    style={{ width: 192, height: 48 }}
+                    size={GoogleSigninButton.Size.Wide}
+                    color={GoogleSigninButton.Color.Dark}
+                    onPress={() => onGoogleButtonPress()}
+                    disabled={initializing}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </SafeAreaView>
+      </>
+    );
 };
 
 const screen = Dimensions.get('window');
