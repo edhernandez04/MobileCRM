@@ -4,12 +4,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import Login from './screens/Login';
 import Home from './screens/Home';
 
-function HomeScreen({ navigation, route }) {
-  return <Home navigation={navigation} user={route.params.user}/>;
+function HomeScreen({ navigation }) {
+  return <Home navigation={navigation} />;
 }
 
-function LoginScreen({ navigation, route }) {
-  return <Login navigation={navigation} user={route.params.user}/>;
+function LoginScreen({ navigation }) {
+  return <Login navigation={navigation} />;
 }
 
 const Drawer = createDrawerNavigator();
@@ -19,7 +19,7 @@ export default function App() {
     <NavigationContainer>
       <Drawer.Navigator initialRouteName={'Login'}>
         <Drawer.Screen name="Home" component={HomeScreen} />
-        <Drawer.Screen name="Login" component={LoginScreen} options={{ title: 'Welcome' }} initialParams={{ user: null }} />
+        <Drawer.Screen name="Login" component={LoginScreen} initialParams={{ user: null }} />
       </Drawer.Navigator>
     </NavigationContainer>
   );

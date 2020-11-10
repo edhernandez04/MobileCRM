@@ -34,7 +34,10 @@ const Login = props => {
   });
 
   onAuthStateChanged = (user) => {
-    props.setParams({ user: user })
+    if (user != null || user != undefined) {
+      const currentUser = { displayName: user.displayName, email: user.email, photo: user.photoURL }
+      props.navigation.setParams({ user: currentUser })
+    }
     if (initializing) setInitializing(false);
   };
 
@@ -48,7 +51,7 @@ const Login = props => {
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
-      navigation.navigate('Home', { user: userInfo })
+      props.navigation.setParams({ user: userInfo })
     } catch (error) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         console.log(error.code);
@@ -60,7 +63,7 @@ const Login = props => {
     try {
       await GoogleSignin.revokeAccess();
       await GoogleSignin.signOut();
-      props.setParams({ user: null }); // Remember to remove the user from your app's state as well
+      props.navigation.setParams({ user: null });
     } catch (error) {
       console.error(error);
     }
@@ -68,7 +71,7 @@ const Login = props => {
 
   return (
     <>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar />
       <SafeAreaView>
         <View style={styles.mainPageContainer}>
           <View style={styles.logoContainer}>
@@ -112,7 +115,7 @@ const Login = props => {
                   style={{ width: 192, height: 48 }}
                   size={GoogleSigninButton.Size.Wide}
                   color={GoogleSigninButton.Color.Dark}
-                  onPress={() => signIn()}
+                  onPress={() => onGoogleButtonPress()}
                   disabled={initializing}
                 />
               </TouchableOpacity>
