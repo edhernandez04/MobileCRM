@@ -8,8 +8,7 @@ import {
   StatusBar,
   Dimensions,
   TextInput,
-  TouchableOpacity,
-  Modal
+  TouchableOpacity
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import {
@@ -17,12 +16,12 @@ import {
   GoogleSigninButton,
 } from '@react-native-community/google-signin';
 import { firebaseConfig } from '../../Setup';
+import ProfileCard from '../components/ProfileCard'
 
 const Login = props => {
   const [initializing, setInitializing] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [user, setUser] = useState();
 
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
@@ -34,7 +33,7 @@ const Login = props => {
   });
 
   onAuthStateChanged = user => {
-
+    props.navigation.setParams({ user: user })
     if (initializing) setInitializing(false);
   };
 
@@ -62,80 +61,70 @@ const Login = props => {
   };
 
   return auth()._user ?
-    (
-      <>
-        <View>
-          <Image source={{ uri: auth()._user.photoURL }} style={{ height: 100, width: 100, borderRadius: 50 }} />
-          <Text>{auth()._user.displayName}</Text>
-          <TouchableOpacity onPress={() => signOut()}>
-            <Text>SIGN OUT</Text>
-          </TouchableOpacity>
-        </View>
-      </>
-    )
+    <ProfileCard />
     :
     (
-      <>
+      <View style={styles.mainPageContainer}>
         <StatusBar />
         <SafeAreaView>
-          <View style={styles.mainPageContainer}>
-            <View style={styles.logoContainer}>
-              <Image
-                style={styles.logo}
-                source={{
-                  uri:
-                    'https://firebasestorage.googleapis.com/v0/b/mobilecrm-e57c8.appspot.com/o/KeepContact.png?alt=media&token=9df42cb5-57d7-4dd3-a2e9-0fca2fc1816e',
-                }}
+          <View style={styles.logoContainer}>
+            <Image
+              style={styles.logo}
+              source={{
+                uri:
+                  'https://firebasestorage.googleapis.com/v0/b/mobilecrm-e57c8.appspot.com/o/KeepContact.png?alt=media&token=9df42cb5-57d7-4dd3-a2e9-0fca2fc1816e',
+              }}
+            />
+          </View>
+
+          <View style={styles.userInfoContainer}>
+            <View style={styles.textInputContainer}>
+              <Text>👤</Text>
+              <TextInput
+                style={styles.inputForm}
+                placeholder="Email"
+                onChangeText={setEmail}
+                value={email}
+                autoCompleteType={'email'}
               />
             </View>
 
-            <View style={styles.userInfoContainer}>
-              <View style={styles.textInputContainer}>
-                <Text>👤</Text>
-                <TextInput
-                  style={styles.inputForm}
-                  placeholder="Email"
-                  onChangeText={setEmail}
-                  value={email}
-                />
-              </View>
+            <View style={styles.textInputContainer}>
+              <Text>🔐</Text>
+              <TextInput
+                style={styles.inputForm}
+                placeholder="Password"
+                secureTextEntry={true}
+                onChangeText={setPassword}
+                value={password}
+                autoCompleteType='password'
+              />
+            </View>
 
-              <View style={styles.textInputContainer}>
-                <Text>🔐</Text>
-                <TextInput
-                  style={styles.inputForm}
-                  placeholder="Password"
-                  secureTextEntry={true}
-                  onChangeText={setPassword}
-                  value={password}
+            <View style={styles.optionsRow}>
+              <TouchableOpacity onPress={() => signIn()}>
+                <Text style={{ fontSize: 18 }}>Sign Up</Text>
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <GoogleSigninButton
+                  style={{ width: 192, height: 48 }}
+                  size={GoogleSigninButton.Size.Wide}
+                  color={GoogleSigninButton.Color.Dark}
+                  onPress={() => onGoogleButtonPress()}
+                  disabled={initializing}
                 />
-              </View>
-
-              <View style={styles.optionsRow}>
-                <TouchableOpacity onPress={() => signIn()}>
-                  <Text style={{ fontSize: 18 }}>Sign-Up</Text>
-                </TouchableOpacity>
-                <TouchableOpacity>
-                  <GoogleSigninButton
-                    style={{ width: 192, height: 48 }}
-                    size={GoogleSigninButton.Size.Wide}
-                    color={GoogleSigninButton.Color.Dark}
-                    onPress={() => onGoogleButtonPress()}
-                    disabled={initializing}
-                  />
-                </TouchableOpacity>
-              </View>
+              </TouchableOpacity>
             </View>
           </View>
         </SafeAreaView>
-      </>
+      </View>
     );
 };
 
 const screen = Dimensions.get('window');
 const styles = StyleSheet.create({
   mainPageContainer: {
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
     height: screen.height,
     width: screen.width,
     backgroundColor: '#004AAD',

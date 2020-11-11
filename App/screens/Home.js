@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, SafeAreaView, StatusBar } from 'react-native'
+import auth from '@react-native-firebase/auth';
 
 export default Home = props => {
-    console.log(props.user)
     useEffect(() => {
-        if (props.user === null || props.user === undefined) props.navigation.navigate('Login')
+        if (!auth()._user) props.navigation.navigate('Login')
     })
     return (
         <>
