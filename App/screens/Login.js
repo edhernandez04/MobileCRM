@@ -9,22 +9,22 @@ import {
   Dimensions,
   TextInput,
   TouchableOpacity,
+  Modal
 } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import {
   GoogleSignin,
   GoogleSigninButton,
-  statusCodes,
 } from '@react-native-community/google-signin';
 import { firebaseConfig } from '../../Setup';
 
 const Login = props => {
   const [initializing, setInitializing] = useState(true);
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [user, setUser] = useState();
 
   useEffect(() => {
-    console.log(auth()._user)
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
     return subscriber;
   }, []);
@@ -33,7 +33,8 @@ const Login = props => {
     webClientId: firebaseConfig.webClientId,
   });
 
-  onAuthStateChanged = () => {
+  onAuthStateChanged = user => {
+
     if (initializing) setInitializing(false);
   };
 
@@ -45,10 +46,15 @@ const Login = props => {
     return auth().signInWithCredential(googleCredential);
   };
 
+  signIn = async () => {
+    email && password ?
+      createUserWithEmailAndPassword(email, password)
+      : alert('Missing Login Information')
+  }
+
   signOut = async () => {
     try {
-      await GoogleSignin.revokeAccess();
-      await GoogleSignin.signOut();
+      await auth().signOut();
       props.navigation.setParams({ user: null });
     } catch (error) {
       console.error(error);
@@ -59,11 +65,16 @@ const Login = props => {
     (
       <>
         <View>
+          <Image source={{ uri: auth()._user.photoURL }} style={{ height: 100, width: 100, borderRadius: 50 }} />
           <Text>{auth()._user.displayName}</Text>
+          <TouchableOpacity onPress={() => signOut()}>
+            <Text>SIGN OUT</Text>
+          </TouchableOpacity>
         </View>
       </>
     )
-    : (
+    :
+    (
       <>
         <StatusBar />
         <SafeAreaView>
@@ -83,9 +94,9 @@ const Login = props => {
                 <Text>👤</Text>
                 <TextInput
                   style={styles.inputForm}
-                  placeholder="Username"
-                  onChangeText={setUsername}
-                  value={username}
+                  placeholder="Email"
+                  onChangeText={setEmail}
+                  value={email}
                 />
               </View>
 
@@ -101,8 +112,8 @@ const Login = props => {
               </View>
 
               <View style={styles.optionsRow}>
-                <TouchableOpacity>
-                  <Text style={{ fontSize: 18 }}>Login</Text>
+                <TouchableOpacity onPress={() => signIn()}>
+                  <Text style={{ fontSize: 18 }}>Sign-Up</Text>
                 </TouchableOpacity>
                 <TouchableOpacity>
                   <GoogleSigninButton
@@ -154,6 +165,7 @@ const styles = StyleSheet.create({
   },
   inputForm: {
     height: 50,
+    width: screen.width / 1.5,
     alignItems: 'center',
     fontSize: 18,
     marginLeft: 20,
