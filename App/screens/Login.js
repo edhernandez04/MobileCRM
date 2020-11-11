@@ -33,7 +33,7 @@ const Login = props => {
   });
 
   onAuthStateChanged = user => {
-    props.navigation.setParams({ user: user })
+    props.setUser(user)
     if (initializing) setInitializing(false);
   };
 
@@ -41,7 +41,6 @@ const Login = props => {
     const userInfo = await GoogleSignin.signIn();
     const idToken = userInfo.idToken
     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-    props.navigation.setParams({ user: userInfo.user })
     return auth().signInWithCredential(googleCredential);
   };
 
@@ -51,72 +50,60 @@ const Login = props => {
       : alert('Missing Login Information')
   }
 
-  signOut = async () => {
-    try {
-      await auth().signOut();
-      props.navigation.setParams({ user: null });
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   return auth()._user ?
     <ProfileCard />
     :
     (
       <View style={styles.mainPageContainer}>
-        <StatusBar />
-        <SafeAreaView>
-          <View style={styles.logoContainer}>
-            <Image
-              style={styles.logo}
-              source={{
-                uri:
-                  'https://firebasestorage.googleapis.com/v0/b/mobilecrm-e57c8.appspot.com/o/KeepContact.png?alt=media&token=9df42cb5-57d7-4dd3-a2e9-0fca2fc1816e',
-              }}
+        <View style={styles.logoContainer}>
+          <Image
+            style={styles.logo}
+            source={{
+              uri:
+                'https://firebasestorage.googleapis.com/v0/b/mobilecrm-e57c8.appspot.com/o/KeepContact.png?alt=media&token=9df42cb5-57d7-4dd3-a2e9-0fca2fc1816e',
+            }}
+          />
+        </View>
+
+        <View style={styles.userInfoContainer}>
+          <View style={styles.textInputContainer}>
+            <Text>👤</Text>
+            <TextInput
+              style={styles.inputForm}
+              placeholder="Email"
+              onChangeText={setEmail}
+              value={email}
+              autoCompleteType={'email'}
             />
           </View>
 
-          <View style={styles.userInfoContainer}>
-            <View style={styles.textInputContainer}>
-              <Text>👤</Text>
-              <TextInput
-                style={styles.inputForm}
-                placeholder="Email"
-                onChangeText={setEmail}
-                value={email}
-                autoCompleteType={'email'}
-              />
-            </View>
-
-            <View style={styles.textInputContainer}>
-              <Text>🔐</Text>
-              <TextInput
-                style={styles.inputForm}
-                placeholder="Password"
-                secureTextEntry={true}
-                onChangeText={setPassword}
-                value={password}
-                autoCompleteType='password'
-              />
-            </View>
-
-            <View style={styles.optionsRow}>
-              <TouchableOpacity onPress={() => signIn()}>
-                <Text style={{ fontSize: 18 }}>Sign Up</Text>
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <GoogleSigninButton
-                  style={{ width: 192, height: 48 }}
-                  size={GoogleSigninButton.Size.Wide}
-                  color={GoogleSigninButton.Color.Dark}
-                  onPress={() => onGoogleButtonPress()}
-                  disabled={initializing}
-                />
-              </TouchableOpacity>
-            </View>
+          <View style={styles.textInputContainer}>
+            <Text>🔐</Text>
+            <TextInput
+              style={styles.inputForm}
+              placeholder="Password"
+              secureTextEntry={true}
+              onChangeText={setPassword}
+              value={password}
+              autoCompleteType='password'
+            />
           </View>
-        </SafeAreaView>
+
+          <View style={styles.optionsRow}>
+            <TouchableOpacity onPress={() => signIn()}>
+              <Text style={{ fontSize: 18 }}>Sign Up</Text>
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <GoogleSigninButton
+                style={{ width: 192, height: 48 }}
+                size={GoogleSigninButton.Size.Wide}
+                color={GoogleSigninButton.Color.Dark}
+                onPress={() => onGoogleButtonPress()}
+                disabled={initializing}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
     );
 };
@@ -124,15 +111,16 @@ const Login = props => {
 const screen = Dimensions.get('window');
 const styles = StyleSheet.create({
   mainPageContainer: {
-    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     height: screen.height,
     width: screen.width,
-    backgroundColor: '#004AAD',
+    backgroundColor: '#004AAD'
   },
   logo: {
     width: screen.width,
     height: screen.height / 4,
-    justifyContent: 'center',
+    marginTop: 35
   },
   userInfoContainer: {
     backgroundColor: 'rgba(255, 255, 255, 0.4)',

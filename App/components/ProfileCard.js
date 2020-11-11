@@ -1,11 +1,9 @@
 import React, { useState } from 'react'
 import {
-    SafeAreaView,
     StyleSheet,
     View,
     Text,
     Image,
-    StatusBar,
     Dimensions,
     TextInput,
     TouchableOpacity,
@@ -48,6 +46,14 @@ export default SignUpForm = props => {
                 await auth().updateProfile({ photoURL: url })
             }
         });
+    };
+
+    signOut = async () => {
+        try {
+            await auth().signOut();
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     return (
