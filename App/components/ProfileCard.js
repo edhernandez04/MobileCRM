@@ -10,19 +10,20 @@ import {
     Button
 } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
-import auth from '@react-native-firebase/auth';
+import auth, { firebase } from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
 
 export default ProfileCard = () => {
     const [displayName, setDisplayName] = useState()
     const [email, setEmail] = useState()
+    const [phoneNumber, setPhoneNumber] = useState()
     const [password, setNewPassword] = useState()
     const [updateForm, toggleUpdateForm] = useState(false)
 
     const updateUserInformation = async () => {
-        if (displayName) await auth().updateProfile({ displayName: "Jane Q. User" })
-        if (email) await auth().updateEmail(email)
-        if (password) await auth().updatePassword(password)
+        if (displayName) await firebase.User.updateProfile({ displayName: displayName })
+        if (email) await firebase.User.updateEmail(email)
+        if (password) await firebase.User.updatePassword(password)
         toggleUpdateForm(false)
     }
 
@@ -82,6 +83,15 @@ export default ProfileCard = () => {
                                 onChangeText={setEmail}
                                 value={email}
                                 autoCompleteType='email'
+                            />
+                        </View>
+                        <View style={styles.textInputContainer}>
+                            <TextInput
+                                style={styles.inputForm}
+                                placeholder="Phone Number"
+                                onChangeText={setPhoneNumber}
+                                value={phoneNumber}
+                                autoCompleteType='tel'
                             />
                         </View>
                         <View style={styles.textInputContainer}>

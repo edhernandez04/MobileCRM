@@ -44,8 +44,20 @@ const Login = props => {
 
   signIn = async () => {
     email && password ?
-      createUserWithEmailAndPassword(email, password)
-      : alert('Missing Login Information')
+      auth()
+        .createUserWithEmailAndPassword('jane.doe@example.com', 'SuperSecretPassword!')
+        .catch(error => {
+          if (error.code === 'auth/email-already-in-use') {
+            auth().signInWithEmailAndPassword(email, password)
+          }
+          if (error.code === 'auth/invalid-email') {
+            alert('Invalid Email')
+          }
+          if (error.code === 'auth/weak-password') {
+            alert(error.getReason())
+          }
+          console.error(error);
+        }) : alert('Missing Login Information')
   }
 
   return auth()._user ?
