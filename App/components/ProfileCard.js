@@ -13,15 +13,17 @@ import ImagePicker from 'react-native-image-picker';
 import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
 
-export default SignUpForm = props => {
+export default ProfileCard = () => {
     const [displayName, setDisplayName] = useState()
     const [email, setEmail] = useState()
     const [password, setNewPassword] = useState()
+    const [updateForm, toggleUpdateForm] = useState(false)
 
     const updateUserInformation = async () => {
         if (displayName) await auth().updateProfile({ displayName: "Jane Q. User" })
         if (email) await auth().updateEmail(email)
         if (password) await auth().updatePassword(password)
+        toggleUpdateForm(false)
     }
 
     const getImage = () => {
@@ -63,42 +65,46 @@ export default SignUpForm = props => {
                     <Image source={{ uri: auth()._user.photoURL }} style={styles.profileImage} />
                 </TouchableOpacity>
                 <Text>{auth()._user.displayName}</Text>
-                <View style={styles.userInfoContainer}>
-                    <View style={styles.textInputContainer}>
-                        <TextInput
-                            style={styles.inputForm}
-                            placeholder="Display Name"
-                            onChangeText={setDisplayName}
-                            value={displayName}
-                            autoCompleteType='name'
-                        />
+                    {updateForm ? <View style={styles.userInfoContainer}>
+                        <View style={styles.textInputContainer}>
+                            <TextInput
+                                style={styles.inputForm}
+                                placeholder="Display Name"
+                                onChangeText={setDisplayName}
+                                value={displayName}
+                                autoCompleteType='name'
+                            />
+                        </View>
+                        <View style={styles.textInputContainer}>
+                            <TextInput
+                                style={styles.inputForm}
+                                placeholder="Email"
+                                onChangeText={setEmail}
+                                value={email}
+                                autoCompleteType='email'
+                            />
+                        </View>
+                        <View style={styles.textInputContainer}>
+                            <TextInput
+                                style={styles.inputForm}
+                                placeholder="Password"
+                                secureTextEntry={true}
+                                onChangeText={setNewPassword}
+                                value={password}
+                                autoCompleteType='password'
+                            />
+                        </View>
+                        <View>
+                            <Button title='Save' onPress={() => updateUserInformation()} />
+                        </View>
                     </View>
-                    <View style={styles.textInputContainer}>
-                        <TextInput
-                            style={styles.inputForm}
-                            placeholder="Email"
-                            onChangeText={setEmail}
-                            value={email}
-                            autoCompleteType='email'
-                        />
-                    </View>
-                    <View style={styles.textInputContainer}>
-                        <TextInput
-                            style={styles.inputForm}
-                            placeholder="Password"
-                            secureTextEntry={true}
-                            onChangeText={setNewPassword}
-                            value={password}
-                            autoCompleteType='password'
-                        />
-                    </View>
+                        : <View>
+                            <Button title='Update Profile' onPress={() => toggleUpdateForm(true)} />
+                        </View>
+                    }
                     <View>
-                        <Button title='Update' onPress={() => updateUserInformation()} />
+                        <Button title='Sign Out' onPress={() => signOut()} color="#dc143c" />
                     </View>
-                </View>
-                <View>
-                    <Button title='Sign Out' onPress={() => signOut()} color="#dc143c" />
-                </View>
             </View>
 
         </>

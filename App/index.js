@@ -6,7 +6,6 @@ import Home from './screens/Home';
 import auth from '@react-native-firebase/auth';
 
 export default App = () => {
-  const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState()
 
   useEffect(() => {
@@ -16,7 +15,6 @@ export default App = () => {
 
   onAuthStateChanged = user => {
     setUser(user)
-    if (initializing) setInitializing(false);
   };
 
   HomeScreen = ({ navigation }) => {

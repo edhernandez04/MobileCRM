@@ -19,7 +19,6 @@ import { firebaseConfig } from '../../Setup';
 import ProfileCard from '../components/ProfileCard'
 
 const Login = props => {
-  const [initializing, setInitializing] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -34,7 +33,6 @@ const Login = props => {
 
   onAuthStateChanged = user => {
     props.setUser(user)
-    if (initializing) setInitializing(false);
   };
 
   onGoogleButtonPress = async () => {
@@ -99,7 +97,6 @@ const Login = props => {
                 size={GoogleSigninButton.Size.Wide}
                 color={GoogleSigninButton.Color.Dark}
                 onPress={() => onGoogleButtonPress()}
-                disabled={initializing}
               />
             </TouchableOpacity>
           </View>
