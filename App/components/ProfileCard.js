@@ -21,9 +21,9 @@ export default ProfileCard = () => {
     const [updateForm, toggleUpdateForm] = useState(false)
 
     const updateUserInformation = async () => {
-        if (displayName) await firebase.User.updateProfile({ displayName: displayName })
-        if (email) await firebase.User.updateEmail(email)
-        if (password) await firebase.User.updatePassword(password)
+        if (displayName) await firebase.auth().currentUser.updateProfile({ displayName: displayName })
+        if (email) await firebase.auth().currentUser.updateProfile({ email: email })
+        if (password) await firebase.auth().currentUser.updateProfile({ password: password })
         toggleUpdateForm(false)
     }
 
@@ -46,7 +46,7 @@ export default ProfileCard = () => {
                 const pathToFile = source;
                 await reference.putFile(pathToFile);
                 const url = await storage().ref(source).getDownloadURL();
-                await auth().updateProfile({ photoURL: url })
+                await firebase.auth().currentUser.updateProfile({ photoURL: url })
             }
         });
     };
@@ -66,55 +66,55 @@ export default ProfileCard = () => {
                     <Image source={{ uri: auth()._user.photoURL }} style={styles.profileImage} />
                 </TouchableOpacity>
                 <Text>{auth()._user.displayName}</Text>
-                    {updateForm ? <View style={styles.userInfoContainer}>
-                        <View style={styles.textInputContainer}>
-                            <TextInput
-                                style={styles.inputForm}
-                                placeholder="Display Name"
-                                onChangeText={setDisplayName}
-                                value={displayName}
-                                autoCompleteType='name'
-                            />
-                        </View>
-                        <View style={styles.textInputContainer}>
-                            <TextInput
-                                style={styles.inputForm}
-                                placeholder="Email"
-                                onChangeText={setEmail}
-                                value={email}
-                                autoCompleteType='email'
-                            />
-                        </View>
-                        <View style={styles.textInputContainer}>
-                            <TextInput
-                                style={styles.inputForm}
-                                placeholder="Phone Number"
-                                onChangeText={setPhoneNumber}
-                                value={phoneNumber}
-                                autoCompleteType='tel'
-                            />
-                        </View>
-                        <View style={styles.textInputContainer}>
-                            <TextInput
-                                style={styles.inputForm}
-                                placeholder="Password"
-                                secureTextEntry={true}
-                                onChangeText={setNewPassword}
-                                value={password}
-                                autoCompleteType='password'
-                            />
-                        </View>
-                        <View>
-                            <Button title='Save' onPress={() => updateUserInformation()} />
-                        </View>
+                {updateForm ? <View style={styles.userInfoContainer}>
+                    <View style={styles.textInputContainer}>
+                        <TextInput
+                            style={styles.inputForm}
+                            placeholder="Display Name"
+                            onChangeText={setDisplayName}
+                            value={displayName}
+                            autoCompleteType='name'
+                        />
                     </View>
-                        : <View>
-                            <Button title='Update Profile' onPress={() => toggleUpdateForm(true)} />
-                        </View>
-                    }
+                    <View style={styles.textInputContainer}>
+                        <TextInput
+                            style={styles.inputForm}
+                            placeholder="Email"
+                            onChangeText={setEmail}
+                            value={email}
+                            autoCompleteType='email'
+                        />
+                    </View>
+                    <View style={styles.textInputContainer}>
+                        <TextInput
+                            style={styles.inputForm}
+                            placeholder="Phone Number"
+                            onChangeText={setPhoneNumber}
+                            value={phoneNumber}
+                            autoCompleteType='tel'
+                        />
+                    </View>
+                    <View style={styles.textInputContainer}>
+                        <TextInput
+                            style={styles.inputForm}
+                            placeholder="Password"
+                            secureTextEntry={true}
+                            onChangeText={setNewPassword}
+                            value={password}
+                            autoCompleteType='password'
+                        />
+                    </View>
                     <View>
-                        <Button title='Sign Out' onPress={() => signOut()} color="#dc143c" />
+                        <Button title='Save' onPress={() => updateUserInformation()} />
                     </View>
+                </View>
+                    : <View>
+                        <Button title='Update Profile' onPress={() => toggleUpdateForm(true)} />
+                    </View>
+                }
+                <View>
+                    <Button title='Sign Out' onPress={() => signOut()} color="#dc143c" />
+                </View>
             </View>
 
         </>
