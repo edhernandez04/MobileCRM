@@ -44,8 +44,27 @@ static void InitializeFlipper(UIApplication *application) {
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+  
+  [[UIApplication sharedApplication] registerForRemoteNotifications];
+  [self configureUserInteractions];
+  
   [FIRApp configure];
+  
   return YES;
+}
+
+- (void)application:(UIApplication *)app
+        didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)devToken {
+    // Forward the token to your provider, using a custom method.
+    [self enableRemoteNotificationFeatures];
+    [self forwardTokenToServer:devTokenBytes];
+}
+ 
+- (void)application:(UIApplication *)app
+        didFailToRegisterForRemoteNotificationsWithError:(NSError *)err {
+    // The token is not currently available.
+    NSLog(@"Remote notification support is unavailable due to error: %@", err);
+    [self disableRemoteNotificationFeatures];
 }
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge

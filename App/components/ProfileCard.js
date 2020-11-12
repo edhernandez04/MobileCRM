@@ -24,6 +24,14 @@ export default ProfileCard = () => {
         if (displayName) await firebase.auth().currentUser.updateProfile({ displayName: displayName })
         if (email) await firebase.auth().currentUser.updateProfile({ email: email })
         if (password) await firebase.auth().currentUser.updateProfile({ password: password })
+        if (phoneNumber) {
+            firebase.auth().verifyPhoneNumber(phoneNumber)
+                .on('state_changed', (phoneAuthSnapshot) => {
+                    console.log('Snapshot state: ', phoneAuthSnapshot.state);
+                }, (phoneAuthError) => {
+                    console.error('Error: ', phoneAuthError.message);
+                });
+        }
         toggleUpdateForm(false)
     }
 
@@ -105,7 +113,7 @@ export default ProfileCard = () => {
                         />
                     </View>
                     <View>
-                        <Button title='Save' onPress={() => updateUserInformation()} />
+                        <Button title={displayName || email || phoneNumber || password ? 'Save' : 'Close'}onPress={() => updateUserInformation()} />
                     </View>
                 </View>
                     : <View>

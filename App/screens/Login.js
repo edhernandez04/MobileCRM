@@ -45,7 +45,7 @@ const Login = props => {
   signIn = async () => {
     email && password ?
       auth()
-        .createUserWithEmailAndPassword('jane.doe@example.com', 'SuperSecretPassword!')
+        .createUserWithEmailAndPassword(email, password)
         .catch(error => {
           if (error.code === 'auth/email-already-in-use') {
             auth().signInWithEmailAndPassword(email, password)
