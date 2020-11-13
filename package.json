@@ -19,6 +19,7 @@
     "@react-navigation/native": "^5.8.8",
     "react": "16.13.1",
     "react-native": "^0.63.3",
+    "react-native-confirmation-code-field": "^6.5.1",
     "react-native-gesture-handler": "^1.8.0",
     "react-native-image-picker": "^2.3.4",
     "react-native-reanimated": "^1.13.1",

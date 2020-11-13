@@ -7,8 +7,14 @@ import {
     Dimensions,
     TextInput,
     TouchableOpacity,
-    Button
+    Button,
+    Alert
 } from 'react-native';
+import {
+    CodeField,
+    Cursor,
+    useBlurOnFulfill,
+} from 'react-native-confirmation-code-field';
 import ImagePicker from 'react-native-image-picker';
 import auth, { firebase } from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
@@ -18,6 +24,7 @@ export default ProfileCard = () => {
     const [email, setEmail] = useState()
     const [phoneNumber, setPhoneNumber] = useState()
     const [password, setNewPassword] = useState()
+    const [verificationCode, setVerificationCode] = useState()
     const [updateForm, toggleUpdateForm] = useState(false)
 
     const updateUserInformation = async () => {
@@ -32,9 +39,8 @@ export default ProfileCard = () => {
                     }, (phoneAuthError) => {
                         console.error('Error: ', phoneAuthError.message);
                     })
-                // PHONE VERIFICATION WORKS BUT NOTHING HAPPENS SUBSEQUENT SO NO INFO IS BEIING UPDATED **********
-                :
-                alert(`Phone Number Format is '15551234567. No spaces, include country code & area code`)
+                    .then(function (verificationId) { verifyModal(verificationId) })
+                : alert(`Phone Number Format is '###########'. No spaces, include country code & area code`)
         }
         toggleUpdateForm(false)
     }
@@ -62,6 +68,43 @@ export default ProfileCard = () => {
             }
         });
     };
+
+    const verifyModal = verificationId => {
+        return (
+            <>
+                <Text style={styles.title}>Verification</Text>
+                <CodeField
+                    ref={useBlurOnFulfill({ verificationCode, cellCount: 6 })}
+                    value={verificationCode}
+                    onChangeText={setVerificationCode}
+                    cellCount={6}
+                    rootStyle={styles.codeFieldRoot}
+                    keyboardType="number-pad"
+                    textContentType="oneTimeCode"
+                    renderCell={({ index, symbol, isFocused }) => (
+                        <Text
+                            key={index}
+                            style={[styles.cell, isFocused && styles.focusCell]}
+                            onLayout={getCellOnLayoutHandler(index)}>
+                            {symbol || (isFocused ? <Cursor /> : null)}
+                        </Text>
+                    )}
+                />
+                <TouchableOpacity onPress={() => verifyCredentials(verificationId)}>
+                    <View>
+                        <Text>Verify</Text>
+                    </View>
+                </TouchableOpacity>
+            </>
+        )
+    }
+
+    const verifyCredentials = async verificationId => {
+        await firebase.auth.PhoneAuthProvider.credential(verificationId, verificationCode)
+            .then(function (phoneCredential) {
+                return firebase.auth().signInWithCredential(phoneCredential);
+            })
+    }
 
     signOut = async () => {
         try {
@@ -104,7 +147,7 @@ export default ProfileCard = () => {
                             placeholder="Phone Number"
                             onChangeText={setPhoneNumber}
                             value={phoneNumber}
-                            keyboardType='phone-pad'
+                            keyboardType='number-pad'
                             textContentType='telephoneNumber'
                             autoCompleteType='tel'
                         />
