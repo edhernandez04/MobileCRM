@@ -1,11 +1,13 @@
 {
   "images" : [
     {
+      "filename" : "40.png",
       "idiom" : "iphone",
       "scale" : "2x",
       "size" : "20x20"
     },
     {
+      "filename" : "60.png",
       "idiom" : "iphone",
       "scale" : "3x",
       "size" : "20x20"
@@ -31,16 +33,19 @@
       "size" : "40x40"
     },
     {
+      "filename" : "Untitled design.png",
       "idiom" : "iphone",
       "scale" : "2x",
       "size" : "60x60"
     },
     {
+      "filename" : "180.png",
       "idiom" : "iphone",
       "scale" : "3x",
       "size" : "60x60"
     },
     {
+      "filename" : "KC.png",
       "idiom" : "ios-marketing",
       "scale" : "1x",
       "size" : "1024x1024"
