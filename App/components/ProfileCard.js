@@ -25,12 +25,16 @@ export default ProfileCard = () => {
         if (email) await firebase.auth().currentUser.updateProfile({ email: email })
         if (password) await firebase.auth().currentUser.updateProfile({ password: password })
         if (phoneNumber) {
-            firebase.auth().verifyPhoneNumber(phoneNumber)
-                .on('state_changed', (phoneAuthSnapshot) => {
-                    console.log('Snapshot state: ', phoneAuthSnapshot.state);
-                }, (phoneAuthError) => {
-                    console.error('Error: ', phoneAuthError.message);
-                });
+            phoneNumber.length === 11 ?
+                firebase.auth().verifyPhoneNumber(`+${phoneNumber}`)
+                    .on('state_changed', (phoneAuthSnapshot) => {
+                        console.log('Snapshot state: ', phoneAuthSnapshot.state);
+                    }, (phoneAuthError) => {
+                        console.error('Error: ', phoneAuthError.message);
+                    })
+                // PHONE VERIFICATION WORKS BUT NOTHING HAPPENS SUBSEQUENT SO NO INFO IS BEIING UPDATED **********
+                :
+                alert(`Phone Number Format is '15551234567. No spaces, include country code & area code`)
         }
         toggleUpdateForm(false)
     }
@@ -91,6 +95,7 @@ export default ProfileCard = () => {
                             onChangeText={setEmail}
                             value={email}
                             autoCompleteType='email'
+                            textContentType='emailAddress'
                         />
                     </View>
                     <View style={styles.textInputContainer}>
@@ -99,6 +104,8 @@ export default ProfileCard = () => {
                             placeholder="Phone Number"
                             onChangeText={setPhoneNumber}
                             value={phoneNumber}
+                            keyboardType='phone-pad'
+                            textContentType='telephoneNumber'
                             autoCompleteType='tel'
                         />
                     </View>
@@ -110,10 +117,11 @@ export default ProfileCard = () => {
                             onChangeText={setNewPassword}
                             value={password}
                             autoCompleteType='password'
+                            textContentType='newPassword'
                         />
                     </View>
                     <View>
-                        <Button title={displayName || email || phoneNumber || password ? 'Save' : 'Close'}onPress={() => updateUserInformation()} />
+                        <Button title={displayName || email || phoneNumber || password ? 'Save' : 'Close'} onPress={() => updateUserInformation()} />
                     </View>
                 </View>
                     : <View>
