@@ -14,6 +14,7 @@ import {
     CodeField,
     Cursor,
     useBlurOnFulfill,
+    useClearByFocusCell,
 } from 'react-native-confirmation-code-field';
 import ImagePicker from 'react-native-image-picker';
 import auth, { firebase } from '@react-native-firebase/auth';
