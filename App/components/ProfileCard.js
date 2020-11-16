@@ -70,6 +70,9 @@ export default ProfileCard = () => {
         });
     };
 
+    // FURTHER SET UP NECESSARY
+    // USERS will be prompted for Push Notifications but nothing returns after acceptance or denial
+    // After Verification is Sent open VerifyModal to accept code - NOT COMPLETED
     const verifyModal = verificationId => {
         return (
             <>

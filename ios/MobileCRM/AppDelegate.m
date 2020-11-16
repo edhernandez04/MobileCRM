@@ -124,7 +124,6 @@ static void InitializeFlipper(UIApplication *application) {
   }];
 }
 
-
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {
 #if DEBUG
